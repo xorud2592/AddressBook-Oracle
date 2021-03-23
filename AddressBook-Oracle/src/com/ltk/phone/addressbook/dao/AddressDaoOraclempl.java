@@ -27,17 +27,19 @@ public class AddressDaoOraclempl implements AddressDao {
 	private static final String TABLE_TEL_NAME = "tel";
 	private static final String TABLE_HP_NAME = "hp";
 	
-	private static final String show_sql = "SELECT " + TABLE_ID_NAME +", " + TABLE_NAME_NAME + ", " + TABLE_TEL_NAME + ", " + TABLE_HP_NAME + 
-											" FROM " + DB_TABLE_NAME + " ORDER BY " + TABLE_ID_NAME;
+	private static final String show_sql = String.format("SELECT %s, %s, %s, %s "
+														+ "FROM %s ORDER BY %s", 
+														TABLE_ID_NAME, TABLE_NAME_NAME, TABLE_TEL_NAME, TABLE_HP_NAME,
+														DB_TABLE_NAME, TABLE_ID_NAME);
 	
-	private static final String insert_sql = "INSERT INTO " + DB_TABLE_NAME + 
-											" VALUES(" + TABLE_SEQUENCE_NAME + ", ?, ?, ?)";
+	private static final String insert_sql = String.format("INSERT INTO %s VALUES(%s, ?, ?, ?)", DB_TABLE_NAME, TABLE_SEQUENCE_NAME);
 	
-	private static final String delete_sql = "DELETE FROM " + DB_TABLE_NAME + 
-											" WHERE " + TABLE_ID_NAME + "=?";
+	private static final String delete_sql = String.format("DELETE FROM %s WHERE %s = ?", DB_TABLE_NAME, TABLE_ID_NAME);
 	
-	private static final String search_sql = "SELECT " + TABLE_ID_NAME + ", " + TABLE_NAME_NAME + ", " + TABLE_TEL_NAME + ", " + TABLE_HP_NAME +
-											" FROM " + DB_TABLE_NAME + " WHERE " + TABLE_NAME_NAME +" LIKE ? ORDER BY " + TABLE_ID_NAME;
+	private static final String search_sql = String.format("SELECT %s, %s, %s, %s FROM %s"
+														+ " WHERE %s LIKE ? ORDER BY %s",
+														TABLE_ID_NAME, TABLE_NAME_NAME, TABLE_TEL_NAME, TABLE_HP_NAME, DB_TABLE_NAME,
+														TABLE_NAME_NAME, TABLE_ID_NAME);
 
 	private Connection getConnection() throws SQLException {
 		Connection conn = null;
