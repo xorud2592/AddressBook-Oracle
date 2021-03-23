@@ -56,7 +56,7 @@ public class AddressVo {
 	public String toString() {
 		return String.format("%d. %-6s %-15s %-15s", id, name, filter(tel), filter(hp));
 	}
-	
+
 	private String filter(String number) {
 		String[] numbers = number.split("-");
 		return numbers[0] + "-" + (numbers[1].substring(0, numbers[1].length() - 2) + "**") + "-"

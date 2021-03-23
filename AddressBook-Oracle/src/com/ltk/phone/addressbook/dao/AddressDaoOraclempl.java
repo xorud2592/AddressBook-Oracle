@@ -15,17 +15,35 @@ public class AddressDaoOraclempl implements AddressDao {
 	private static final String INPUT_FORM_ERROR = "[올바른 전화번호 형식이 아닙니다]";
 	private static final String DRIVE_ROAD_ERROR = "[드라이버 로드 실패!]";
 
-	private static final String show_sql = "SELECT id, name, tel, hp FROM phone_book ORDER BY id";
-	private static final String insert_sql = "INSERT INTO phone_book VALUES(seq_phone_book.NEXTVAL, ?, ?, ?)";
-	private static final String delete_sql = "DELETE FROM phone_book WHERE id=?";
-	private static final String search_sql = "SELECT id, name, tel, hp FROM phone_book WHERE name LIKE ? ORDER BY id";
+	private static final String jdbc_driver = "oracle.jdbc.driver.OracleDriver";
+	private static final String db_url = "jdbc:oracle:thin:@localhost:1521:xe";
+	private static final String db_id = "C##LTK";
+	private static final String db_pass = "1234";
+
+	private static final String DB_TABLE_NAME = "phone_book";
+	private static final String TABLE_SEQUENCE_NAME = "seq_phone_book.NEXTVAL";
+	private static final String TABLE_ID_NAME = "id";
+	private static final String TABLE_NAME_NAME = "name";
+	private static final String TABLE_TEL_NAME = "tel";
+	private static final String TABLE_HP_NAME = "hp";
+	
+	private static final String show_sql = "SELECT " + TABLE_ID_NAME +", " + TABLE_NAME_NAME + ", " + TABLE_TEL_NAME + ", " + TABLE_HP_NAME + 
+											" FROM " + DB_TABLE_NAME + " ORDER BY " + TABLE_ID_NAME;
+	
+	private static final String insert_sql = "INSERT INTO " + DB_TABLE_NAME + 
+											" VALUES(" + TABLE_SEQUENCE_NAME + ", ?, ?, ?)";
+	
+	private static final String delete_sql = "DELETE FROM " + DB_TABLE_NAME + 
+											" WHERE " + TABLE_ID_NAME + "=?";
+	
+	private static final String search_sql = "SELECT " + TABLE_ID_NAME + ", " + TABLE_NAME_NAME + ", " + TABLE_TEL_NAME + ", " + TABLE_HP_NAME +
+											" FROM " + DB_TABLE_NAME + " WHERE " + TABLE_NAME_NAME +" LIKE ? ORDER BY " + TABLE_ID_NAME;
 
 	private Connection getConnection() throws SQLException {
 		Connection conn = null;
 		try {
-			Class.forName("oracle.jdbc.driver.OracleDriver");
-			String dburl = "jdbc:oracle:thin:@localhost:1521:xe";
-			conn = DriverManager.getConnection(dburl, "C##LTK", "1234");
+			Class.forName(jdbc_driver);
+			conn = DriverManager.getConnection(db_url, db_id, db_pass);
 		} catch (ClassNotFoundException e) {
 			System.err.println(DRIVE_ROAD_ERROR);
 		}
@@ -47,10 +65,10 @@ public class AddressDaoOraclempl implements AddressDao {
 			rs = stmt.executeQuery(sql);
 
 			while (rs.next()) {
-				Long id = rs.getLong("id");
-				String name = rs.getString("name");
-				String tel = rs.getString("tel");
-				String hp = rs.getString("hp");
+				Long id = rs.getLong(TABLE_ID_NAME);
+				String name = rs.getString(TABLE_NAME_NAME);
+				String tel = rs.getString(TABLE_TEL_NAME);
+				String hp = rs.getString(TABLE_HP_NAME);
 
 				AddressVo vo = new AddressVo(id, name, tel, hp);
 				list.add(vo);
@@ -84,7 +102,6 @@ public class AddressDaoOraclempl implements AddressDao {
 				pstmt.setString(3, vo.getTel());
 
 				insertedCount = pstmt.executeUpdate();
-
 			} catch (SQLException e) {
 				e.printStackTrace();
 			} finally {
