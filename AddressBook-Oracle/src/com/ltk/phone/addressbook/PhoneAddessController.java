@@ -138,7 +138,7 @@ public class PhoneAddessController {
 		boolean empty = false;
 		while (it.hasNext()) {
 			AddressVo vo = it.next();
-			System.out.println(vo.toString());
+			System.out.println(vo);
 			empty = true;
 		}
 		return empty;
