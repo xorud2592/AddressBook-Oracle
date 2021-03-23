@@ -52,14 +52,11 @@ public class AddressVo {
 		this.hp = hp;
 	}
 
-//	@Override
-//	public String toString() {
-//		return String.format("%d. %-6s %-15s %-15s", id, name, filter(tel), filter(hp));
-//	}
-	public void showString() {
-		System.out.println(id + ". " + name + "\t" + filter(tel) + "\t" + filter(hp));
+	@Override
+	public String toString() {
+		return String.format("%d. %-6s %-15s %-15s", id, name, filter(tel), filter(hp));
 	}
-
+	
 	private String filter(String number) {
 		String[] numbers = number.split("-");
 		return numbers[0] + "-" + (numbers[1].substring(0, numbers[1].length() - 2) + "**") + "-"

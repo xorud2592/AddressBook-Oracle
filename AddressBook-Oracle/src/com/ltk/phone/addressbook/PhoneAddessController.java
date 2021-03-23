@@ -9,31 +9,30 @@ import com.ltk.phone.addressbook.dao.AddressDaoOraclempl;
 import com.ltk.phone.addressbook.dao.AddressVo;
 
 public class PhoneAddessController {
-	static final String MEMU_INFO = "*****************************************\n"
+	private static final String MEMU_INFO = "*****************************************\n"
 			+ "*\t       전화번호 관리 프로그램        \t*\n" + "*****************************************";
-	static final String MENU_SELECT = "1.리스트\t2.등록\t3.삭제\t4.검색\t5.종료\n" + "--------------------------------------\n"
+	private static final String MENU_SELECT = "1.리스트\t2.등록\t3.삭제\t4.검색\t5.종료\n" + "--------------------------------------\n"
 			+ ">메뉴번호: ";
-	static final String MENU_SHOWINFO_MESSAGE = "<1.리스트>";
-	static final String MENU_ADDINFO_MESSAGE = "<2.이름>";
-	static final String MENU_DELETE_MESSAGE = "<3.삭제>";
-	static final String MENU_SEARCH_MESSAGE = "<4.검색>";
+	private static final String MENU_SHOWINFO_MESSAGE = "<1.리스트>";
+	private static final String MENU_ADDINFO_MESSAGE = "<2.이름>";
+	private static final String MENU_DELETE_MESSAGE = "<3.삭제>";
+	private static final String MENU_SEARCH_MESSAGE = "<4.검색>";
 
-	static final String INPUT_ERROR = "[다시입력해주세요]";
-	static final String INPUT_NUMBERFORMAT_ERROR = "[숫자를 입력해 주세요]";
-	static final String INPUT_DBSEARCH_ERROR = "[리스트에 없는 숫자입니다.]";
-	static final String INPUT_NAME = ">이름: ";
-	static final String INPUT_NUMBER = ">번호: ";
+	private static final String INPUT_ERROR = "[다시입력해주세요]";
+	private static final String INPUT_NUMBERFORMAT_ERROR = "[숫자를 입력해 주세요]";
+	private static final String INPUT_NAME = ">이름: ";
+	private static final String INPUT_NUMBER = ">번호: ";
 
-	static final String INPUT_PHONENUMBER = ">휴대전화: ";
-	static final String INPUT_HOUSENUMBER = ">집전화: ";
+	private static final String INPUT_PHONENUMBER = ">휴대전화: ";
+	private static final String INPUT_HOUSENUMBER = ">집전화: ";
 
-	static final String ADD_SUCCESS_MESSAGE = "[등록되었습니다.]";
-	static final String ADD_ERROR_MESSAGE = "[등록을 실패했습니다.]";
+	private static final String ADD_SUCCESS_MESSAGE = "[등록되었습니다.]";
+	private static final String ADD_ERROR_MESSAGE = "[등록을 실패했습니다.]";
 	
-	static final String DELETE_SUCCESS_MESSAGE = "[삭제되었습니다.]";
-	static final String DELETE_ERROR_MESSAGE = "[삭제을 실패했습니다.]";
-	static final String SEARCH_EMPTY_MESSAGE = "[아무것도 못찾았습니다.]";
-	static final String END_MESSAGE = "*****************************************\n" + "*\t\t감사합니다\t\t\t*\n"
+	private static final String DELETE_SUCCESS_MESSAGE = "[삭제되었습니다.]";
+	private static final String DELETE_ERROR_MESSAGE = "[삭제을 실패했습니다.]";
+	private static final String SEARCH_EMPTY_MESSAGE = "[아무것도 못찾았습니다.]";
+	private static final String END_MESSAGE = "*****************************************\n" + "*\t\t감사합니다\t\t\t*\n"
 			+ "*****************************************";
 
 	public static void start() {
@@ -87,7 +86,8 @@ public class PhoneAddessController {
 
 		Iterator<AddressVo> it = list.iterator();
 
-		showList(it);
+		if(!showList(it))
+			System.out.println(SEARCH_EMPTY_MESSAGE);
 	}
 
 	
@@ -136,11 +136,14 @@ public class PhoneAddessController {
 		showList(it);
 	}
 	
-	private static void showList(Iterator<AddressVo> it) {
+	private static boolean showList(Iterator<AddressVo> it) {
+		boolean empty = false;
 		while (it.hasNext()) {
 			AddressVo vo = it.next();
-			vo.showString();
+			System.out.println(vo.toString());
+			empty = true;
 		}
+		return empty;
 	}
 	
 }

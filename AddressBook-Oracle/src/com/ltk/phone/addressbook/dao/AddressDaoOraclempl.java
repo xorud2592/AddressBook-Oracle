@@ -12,8 +12,13 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class AddressDaoOraclempl implements AddressDao {
-	static final String INPUT_NUMBER_ERROR = "숫자만 입력해주세요";
-	static final String INPUT_FORM_ERROR = "[올바른 전화번호 형식이 아닙니다]";
+	private static final String INPUT_FORM_ERROR = "[올바른 전화번호 형식이 아닙니다]";
+	private static final String DRIVE_ROAD_ERROR = "[드라이버 로드 실패!]";
+
+	private static final String show_sql = "SELECT id, name, tel, hp FROM phone_book ORDER BY id";
+	private static final String insert_sql = "INSERT INTO phone_book VALUES(seq_phone_book.NEXTVAL, ?, ?, ?)";
+	private static final String delete_sql = "DELETE FROM phone_book WHERE id=?";
+	private static final String search_sql = "SELECT id, name, tel, hp FROM phone_book WHERE name LIKE ? ORDER BY id";
 
 	private Connection getConnection() throws SQLException {
 		Connection conn = null;
@@ -22,7 +27,7 @@ public class AddressDaoOraclempl implements AddressDao {
 			String dburl = "jdbc:oracle:thin:@localhost:1521:xe";
 			conn = DriverManager.getConnection(dburl, "C##LTK", "1234");
 		} catch (ClassNotFoundException e) {
-			System.err.println("드라이버 로드 실패!");
+			System.err.println(DRIVE_ROAD_ERROR);
 		}
 		return conn;
 	}
@@ -38,7 +43,7 @@ public class AddressDaoOraclempl implements AddressDao {
 			conn = getConnection();
 			stmt = conn.createStatement();
 
-			String sql = "SELECT id, name, tel, hp FROM phone_book ORDER BY id";
+			String sql = show_sql;
 			rs = stmt.executeQuery(sql);
 
 			while (rs.next()) {
@@ -69,7 +74,7 @@ public class AddressDaoOraclempl implements AddressDao {
 		int insertedCount = 0;
 		if (checkNumber(vo)) {
 			Connection conn = null;
-			String sql = "INSERT INTO phone_book VALUES(seq_phone_book.NEXTVAL, ?, ?, ?)";
+			String sql = insert_sql;
 
 			try {
 				conn = getConnection();
@@ -79,8 +84,7 @@ public class AddressDaoOraclempl implements AddressDao {
 				pstmt.setString(3, vo.getTel());
 
 				insertedCount = pstmt.executeUpdate();
-				
-				
+
 			} catch (SQLException e) {
 				e.printStackTrace();
 			} finally {
@@ -95,19 +99,18 @@ public class AddressDaoOraclempl implements AddressDao {
 	}
 
 	public boolean checkNumber(AddressVo vo) {
-		Pattern phoneNumberPattern = Pattern.compile("^[0-9]{3}-[0-9]{3,4}-[0-9]{4}$");
-		Pattern houseNumberPattern = Pattern.compile("^[0-9]{2,3}-[0-9]{3,4}-[0-9]{4}$");
+		Pattern telPattern = Pattern.compile("^[0-9]{3}-[0-9]{3,4}-[0-9]{4}$");
+		Pattern hpPattern = Pattern.compile("^[0-9]{2,3}-[0-9]{3,4}-[0-9]{4}$");
 
-		Matcher phoneNumberMatcher = phoneNumberPattern.matcher(vo.getTel());
-		Matcher houseNumberMatcher = houseNumberPattern.matcher(vo.getHp());
+		Matcher telMatcher = telPattern.matcher(vo.getTel());
+		Matcher hpMatcher = hpPattern.matcher(vo.getHp());
 
-		if (phoneNumberMatcher.find() && houseNumberMatcher.find()) 
-				return true;
-		
+		if (telMatcher.find() && hpMatcher.find())
+			return true;
+
 		System.out.println(INPUT_FORM_ERROR);
 		return false;
 	}
-	
 
 	@Override
 	public boolean delete(Long id) {
@@ -117,7 +120,7 @@ public class AddressDaoOraclempl implements AddressDao {
 
 		try {
 			conn = getConnection();
-			String sql = "DELETE FROM phone_book WHERE id=?";
+			String sql = delete_sql;
 			pstmt = conn.prepareStatement(sql);
 
 			pstmt.setLong(1, id);
@@ -144,7 +147,7 @@ public class AddressDaoOraclempl implements AddressDao {
 
 		try {
 			conn = getConnection();
-			String sql = "SELECT id, name, tel, hp FROM phone_book WHERE name LIKE ? ORDER BY id";
+			String sql = search_sql;
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setString(1, "%" + target + "%");
 
